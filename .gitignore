@@ -1,0 +1,50 @@
+# Ignore Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# Ignore sensitive key files
+*.pem
+*.key
+*.crt
+*.env
+*.vault_pass.txt
+
+# Ignore SSH config and history
+.ssh/
+*.pub
+
+# Ignore Ansible roles downloaded externally
+roles/
+*.retry
+
+# Ignore Docker files
+*.tar
+docker-compose.override.yml
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore Python cache if using scripts
+__pycache__/
+*.pyc
+
+# Ignore Jenkins workspace
+/workspace/
+*.log
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore idea IDE files (JetBrains)
+.idea/
+
+# Ignore node_modules if Node.js used
+node_modules/
+
+# Ignore OS-specific files
+*.swp
