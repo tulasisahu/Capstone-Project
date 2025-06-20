@@ -1,1 +1,1 @@
-key_name = "your-keypair-name"  # Replace with your actual keypair
+key_name = "ansible-master-key.pem"  # Replace with your actual keypair
