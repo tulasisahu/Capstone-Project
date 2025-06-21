@@ -1,0 +1,81 @@
+---
+- name: Install DevOps Stack
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: ['git', 'docker.io', 'openjdk-11-jdk']
+        state: present
+        update_cache: yes
+
+    - name: Start Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Install Jenkins
+      shell: |
+        wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+        sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+        apt update
+        apt install jenkins -y
+        systemctl start jenkins
+        systemctl enable jenkins
+
+############################################################################
+#this is for Amazon Linux 2023
+
+---
+- name: Install DevOps Stack on Amazon Linux 2023
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Enable Amazon Linux 2023 extras repository
+      shell: |
+        dnf config-manager --set-enabled extras
+        dnf makecache
+      args:
+        executable: /bin/bash
+
+    - name: Install dependencies (git, docker, Java 17)
+      dnf:
+        name:
+          - git
+          - docker
+          - java-17-amazon-corretto
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add Jenkins repo and import GPG key
+      shell: |
+        curl --silent --location https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key | sudo tee /etc/pki/rpm-gpg/jenkins.io.key > /dev/null
+        sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+        sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
+        [jenkins]
+        name=Jenkins-stable
+        baseurl=https://pkg.jenkins.io/redhat-stable
+        gpgcheck=1
+        EOF
+        dnf makecache
+      args:
+        executable: /bin/bash
+
+    - name: Install Jenkins
+      dnf:
+        name: jenkins
+        state: present
+
+    - name: Start and enable Jenkins
+      service:
+        name: jenkins
+        state: started
+        enabled: true
