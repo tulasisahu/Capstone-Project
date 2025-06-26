@@ -1,0 +1,26 @@
+---
+- name: Deploy Jenkins SSH public key to Prod server
+  hosts: server2
+  become: yes
+  vars:
+    jenkins_key_path: /home/ec2-user/.ssh/jenkins-prod-key.pub
+  tasks:
+    - name: Read Jenkins public key from Jenkins server       
+      slurp:
+        src: "{{ jenkins_key_path }}"
+      delegate_to: server1
+      run_once: true
+      register: jenkins_pubkey
+
+    - name: Ensure .ssh directory exists
+      file:
+        path: /home/ec2-user/.ssh
+        state: directory
+        mode: '0700'
+        owner: ec2-user
+        group: ec2-user
+
+    - name: Add Jenkins public key to authorized_keys
+      authorized_key:
+        user: ec2-user
+        key: "{{ jenkins_pubkey.content | b64decode }}"
