@@ -25,7 +25,7 @@
         systemctl enable jenkins
 
 ############################################################################
-#this is for Amazon Linux 2023
+#this is for Amazon Linux 2023 (choose based on os )
 
 ---
 - name: Install DevOps Stack on Amazon Linux 2023
